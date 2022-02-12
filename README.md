@@ -7,7 +7,10 @@ You can find the generator here - https://qqwing.com/, choose generate, choose y
 
 Once you've generated your puzzles copy and paste them into a text document. Save it. Run the script/executable select that txt file and then choose a location to save your presentation.
 
-To do
+# To do
+
 Lots!
+
 Add GUI
+
 Add formatting/styling options
