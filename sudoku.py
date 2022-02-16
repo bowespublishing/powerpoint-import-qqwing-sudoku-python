@@ -8,6 +8,8 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
 from pptx.oxml.xmlchemy import OxmlElement
+from pptx_tools import utils
+
 
 def SubElement(parent, tagname, **kwargs):
     element = OxmlElement(tagname)
@@ -15,7 +17,7 @@ def SubElement(parent, tagname, **kwargs):
     parent.append(element)
     return element
 
-def _set_top_cell_border(cell, border_color="000000", border_width='75800'):
+def _set_top_cell_border(cell, border_color="000000", border_width='90800'):
     
     tc = cell._tc
     tcPr = tc.get_or_add_tcPr()
@@ -26,7 +28,7 @@ def _set_top_cell_border(cell, border_color="000000", border_width='75800'):
     srgbClr = SubElement(solidFill, 'a:srgbClr', val=border_color)
     return cell
 
-def _set_bottom_cell_border(cell, border_color="000000", border_width='75800'):
+def _set_bottom_cell_border(cell, border_color="000000", border_width='90800'):
     
     tc = cell._tc
     tcPr = tc.get_or_add_tcPr()
@@ -37,7 +39,7 @@ def _set_bottom_cell_border(cell, border_color="000000", border_width='75800'):
     srgbClr = SubElement(solidFill, 'a:srgbClr', val=border_color)
     return cell
 
-def _set_left_cell_border(cell, border_color="000000", border_width='75800'):
+def _set_left_cell_border(cell, border_color="000000", border_width='90800'):
     
     tc = cell._tc
     tcPr = tc.get_or_add_tcPr()
@@ -48,7 +50,7 @@ def _set_left_cell_border(cell, border_color="000000", border_width='75800'):
     srgbClr = SubElement(solidFill, 'a:srgbClr', val=border_color)
     return cell
 
-def _set_right_cell_border(cell, border_color="000000", border_width='75800'):
+def _set_right_cell_border(cell, border_color="000000", border_width='90800'):
     
     tc = cell._tc
     tcPr = tc.get_or_add_tcPr()
@@ -71,8 +73,8 @@ sudokulocation = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
 
  
 presentation = Presentation()
-presentation.slide_width = Inches(8.25)
-presentation.slide_height = Inches(8.25)
+presentation.slide_width = Inches(12)
+presentation.slide_height = Inches(12)
 
 fileObj = [line for line in open(sudokulocation, "r").read().splitlines() if line]
 words = fileObj
@@ -104,10 +106,11 @@ for z in range(array_length):
         title = "Sudoku Solution "
         number = str(z)
 
-    txBox = slide.shapes.add_textbox((0 + Inches(1)), (0 + Inches(0.5)), (presentation.slide_width - (Left * 2)), Inches(0.5))
+    txBox = slide.shapes.add_textbox((0 + Inches(1)), (0 + Inches(0.1)), (presentation.slide_width - (Left * 2)), Inches(0.5))
     tf = txBox.text_frame
     p = tf.paragraphs[0]
     p.text = title+number
+    p.font.size = Pt(44)
     p.alignment = PP_ALIGN.CENTER
 
 
@@ -153,7 +156,7 @@ for z in range(array_length):
                     
             else:
                 shape.table.cell(i,j).text = currentpuzzle[c]
-                shape.table.cell(i,j).text_frame.paragraphs[0].font.size = Pt(30)
+                shape.table.cell(i,j).text_frame.paragraphs[0].font.size = Pt(54)
                 shape.table.cell(i,j).text_frame.paragraphs[0].margin_bottom = 0
                 shape.table.cell(i,j).text_frame.paragraphs[0].margin_top = 0
                 shape.table.cell(i,j).vertical_anchor = MSO_ANCHOR.MIDDLE
@@ -202,6 +205,16 @@ filetype = ".pptx"
 saveaspptx = filename+filetype
 presentation.save(saveaspptx)
 
+saveaspptx = '\\'.join(saveaspptx.split('/'))
+
+pptxfolder = saveaspptx.rsplit('\\', 1)[0]
+
+png_folder = pptxfolder
+pptx_file = saveaspptx
+
+
+utils.save_pptx_as_png(png_folder, pptx_file, overwrite_folder=True)
+
 
 
 App = Tk() 
@@ -211,3 +224,4 @@ App.withdraw()
 messagebox.showinfo('Completed!', 'Your import of Sudoku puzzles into PowerPoint has completed successfully!')
 
 App.mainloop()
+os._exit()
